@@ -843,3 +843,7 @@ Quick steps
 1. Copy the folder [Interface_Design_Software/exe_file_GUI](https://github.com/MifralTech/Lacerta_CF/tree/main/Interface_Design_Software/exe_file_GUI) to a Windows machine (or access it from Windows).
 2. Extract/unpack all archive parts (e.g. LacertaHMIDesigner.part1.rar, part2, part3) into a single directory.
 3. Run the extracted installer or executable on Windows.
+
+## License
+
+Lacerta is licensed under the [Apache License 2.0](LICENSE). Attributions required by third-party licenses are in [NOTICE](NOTICE), and every third-party component with its license is listed in [THIRD-PARTY-LICENSES.md](THIRD-PARTY-LICENSES.md). The Mifral and Lacerta names and logos are not licensed for reuse.

@@ -1,0 +1,62 @@
+Lacerta
+Open Hardware Interface Engine for Embedded Systems
+
+Copyright The Lacerta Authors:
+  Miguel Rivera and Francisco J. Rodriguez (main authors)
+  Emilio Baungarten, German Pinedo, Manuel Rivera and Aldo Vidauri (co-authors)
+Published by Mifral Tech S.A. de C.V. (https://github.com/MifralTech).
+
+Licensed under the Apache License, Version 2.0. See the LICENSE file.
+
+The "Mifral" and "Lacerta" names and logos are trademarks of their owners. The Apache
+License does not grant permission to use them (Apache-2.0, section 6).
+
+-------------------------------------------------------------------------------
+Third-party material
+-------------------------------------------------------------------------------
+
+This repository includes or is derived from the third-party works listed below. Their
+copyright notices are kept in the files themselves; this file repeats the attributions
+that the corresponding licenses ask to be preserved. THIRD-PARTY-LICENSES.md lists every
+third-party component, its license and how it is used.
+
+1. Caravel User Project and related templates
+   Copyright 2020-2024 Efabless Corporation (files carry the header
+   "SPDX-FileCopyrightText: <year> Efabless Corporation"). Apache License 2.0.
+   Found in verilog/dv, verilog/includes, the Caravel-derived integration files in
+   verilog/rtl, and the historical verilog/rtl_old*, plus Makefile, dv_setup and openlane.
+   openlane/Makefile was adapted from the Caravel User Project by UmbraLogic Technologies
+   LLC (Copyright 2025), also under the Apache License 2.0.
+
+2. PicoRV32
+   Copyright (C) 2015 Claire Xenia Wolf <claire@yosyshq.com>. ISC License.
+   verilog/rtl_old3/debug/soc/picorv32/picorv32.v (historical, not part of the current
+   design). The ISC permission notice at the top of that file must stay with any copy.
+
+3. SkyWater SKY130 PDK
+   Copyright The SkyWater PDK Authors. Apache License 2.0.
+   The standard cells of the sky130_fd_sc_hd library are embedded in the generated layout
+   and netlist views (gds, def, lef, lib, spef, mag, verilog/gl, signoff).
+
+4. KiCad libraries
+   The footprints used by PCB/Lacerta_v2_1.kicad_pcb come partly from the official KiCad
+   libraries (Capacitor_SMD, Resistor_SMD, LED_SMD, Connector_*, Package_*, TestPoint, ...),
+   licensed CC-BY-SA 4.0 with the KiCad library exception that allows using them in a
+   design distributed under any license. The Caravel_Board footprints come from the
+   Efabless/ChipFoundry caravel_board project (Apache License 2.0).
+
+5. Quartus project files
+   Interface_Design_Software/development_files/fpga/lacerta.qpf and lacerta.qsf begin with
+   an Intel Corporation notice (Copyright (C) 2017 Intel Corporation) that subjects those
+   generated files to Intel's license terms. That notice is kept unchanged and is not
+   covered by the Apache License.
+
+6. Simulation models generated with ChatGPT
+   verilog/dv/lacerta/CY7C1049GN.v (a behavioral model of the Infineon CY7C1049GN SRAM) and
+   verilog/dv/lacerta/uart_bfm.v (a UART bus functional model) were generated with ChatGPT
+   and then edited by the authors. They are testbench code, not part of the fabricated
+   design, and contain no third-party vendor code.
+
+Product and company names (Caravel, ChipFoundry, Efabless, SkyWater, Infineon, FTDI, Intel,
+KiCad, Qt) are trademarks of their respective owners and are used only to identify
+compatible parts, tools and services.
