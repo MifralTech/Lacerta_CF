@@ -1,0 +1,45 @@
+.bd-article-container {
+  max-width: 61rem;
+}
+
+.bd-article {
+  font-size: 16.5px;
+  line-height: 1.68;
+}
+
+.bd-sidebar-primary {
+  width: 16rem;
+}
+
+.bd-article h2 {
+  border-bottom: 0;
+}
+
+/* Side-by-side image pairs (appendix layouts) and their centered caption. */
+.bd-article img.lacerta-half {
+  display: inline-block;
+  width: 48.5% !important;
+  height: auto;
+  vertical-align: top;
+}
+
+.lacerta-caption {
+  margin: 0.5rem 0 1.25rem;
+  text-align: center;
+}
+
+/* Eight top-level pages: tighten the header just above the width where the theme collapses it. */
+@media (min-width: 960px) and (max-width: 1199.98px) {
+  .navbar-brand .logo__title {
+    display: none;
+  }
+
+  .lacerta-navbar {
+    gap: var(--mifral-space-3);
+  }
+
+  .search-button-field .search-button__default-text,
+  .search-button-field .search-button__kbd-shortcut {
+    display: none;
+  }
+}

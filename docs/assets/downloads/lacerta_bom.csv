@@ -1,0 +1,33 @@
+Reference,Qty,Value,DNP,price/unit,sum,Vendor,Footprint,Datasheet
+"C1,C11,C14,C17,C22,C23",6,0.01uF,CL21B103KBANNNC,0.1,0.6,https://www.digikey.com/en/products/detail/samsung-electro-mechanics/CL21B103KBANNNC/3886673,Capacitor_SMD:C_0805_2012Metric,~
+"C2,C3,C4,C5,C6,C7,C8,C9,C18,C20,C21,C24",12,0.1uF,CL21B104KBCNNNC,0.1,1.2,https://www.digikey.com/en/products/detail/samsung-electro-mechanics/CL21B104KBCNNNC/3886661?s=N4IgTCBcDaIMIBkwEYBCyAMAWA0quAckXCALoC%2BQA,Capacitor_SMD:C_0805_2012Metric,~
+"C10,C13,C19",3,1uF,CL05A105KO5NNNC,0.1,0.3,https://www.digikey.com/en/products/detail/samsung-electro-mechanics/CL05A105KO5NNNC/3886725,Capacitor_SMD:C_0805_2012Metric,~
+"C12,C15,C16,C25",4,10uF,CL21A106KPFNNNE,0.1,0.4,https://www.digikey.com/en/products/detail/samsung-electro-mechanics/CL21A106KPFNNNE/3886710?s=N4IgTCBcDaIMIBkwEYCCyAMA2A0gBQDEA5EgURAF0BfIA,Capacitor_SMD:C_0805_2012Metric,~
+"D1,D3,D4",3,RED,LTST-C150KRKT,0.16,0.48,https://www.digikey.com.mx/es/products/detail/liteon/LTST-C150KRKT/386761?srsltid=AfmBOorwQqiuYKUm_4Wn7a27B6QmOmT22Nmu6zgWmG6erG1P7-2NJcqS,LED_SMD:LED_1206_3216Metric,~
+FB1,1,600R/0.5A,BMC-Q1JY0600H,0.299,0.299,https://www.mouser.mx/ProductDetail/TE-Connectivity-Sigma-Inductors/BMC-Q1JY0600H?qs=IKkN%2F947nfCpdKXvHAmIsg%3D%3D&srsltid=AfmBOoqx7EsG0KkdCNnBqh4gAW79b63rd6qAayTFI2BxUj2EV-m7e1Fh,Inductor_SMD:L_0805_2012Metric,~
+J1,1,USB_B_Micro,105017-0001,0.92,0.92,https://www.digikey.com.mx/es/products/detail/molex/1050170001/2350832?srsltid=AfmBOooTm4tfrIZGSL_IeosZWA5jU1s9Ud7imub7MJHpVp5U8uPyIFdC,strive_foot_prints:FCI_10118193-0001LF,~
+"J2,J6,J12",3,Conn_01x02_Pin,M50-3530242,0.1,0.3,https://www.digikey.com.mx/es/products/detail/harwin-inc/M50-3530242/7044013?srsltid=AfmBOorqnser39xM9J7NPPK4jXD9lq6_hgJ2tyg80tIUVbv23jOh3s3z,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,~
+"J3,J5,J8,J9",4,Conn_01x02_Pin,M50-3530242,0.1,0.4,https://www.digikey.com.mx/es/products/detail/harwin-inc/M50-3530242/7044013?s=N4IgTCBcDaILIFYAMBaAzAtSwBYIF0BfIA,Caravel_Board:Shorted_PinHeader_1x02_P2.54mm_Vertical,~
+J4,1,Conn_01x03_Pin,61300311121,0.13,0.13,https://www.digikey.com.mx/es/products/detail/w%C3%BCrth-elektronik/61300311121/4846825?s=N4IgTCBcDaIGwEYDMAGFSGbAkBdAvkA,Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical,~
+J7,1,Conn_01x06_Pin,61300611121,0.35,0.35,https://www.digikey.com.mx/es/products/detail/w%C3%BCrth-elektronik/61300611121/4846833?s=N4IgTCBcDaIGwEYDMAGFiELAkBdAvkA,Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical,~
+J10,1,Conn_01x14_Socket,PPTC141LFBN-RC,0.77,0.77,https://www.digikey.com/en/products/detail/sullins-connector-solutions/PPTC141LFBN-RC/810152,Connector_PinSocket_1.00mm:PinSocket_1x14_P1.00mm_Vertical,~
+J11,1,Conn_01x10_Pin,61301011121,0.95,0.95,https://www.digikey.com/es/products/detail/w%C3%BCrth-elektronik/61301011121/2508439?s=N4IgTCBcDaIGwEYDMAGBaELAkBdAvkA,Connector_PinHeader_2.54mm:PinHeader_1x10_P2.54mm_Vertical,~
+J14,1,Conn_01x15_Pin,PH1-15-UA,0.22,0.22,https://www.digikey.com/es/products/detail/adam-tech/PH1-15-UA/9830359,Connector_PinHeader_2.54mm:PinHeader_1x15_P2.54mm_Vertical,~
+"R1,R4,R7,R8,R9,R10,R12,R13,R15,R16,R17,R18,R19,R20",14,10K,RV0805JR-0710KL,0.13,1.82,https://www.mouser.mx/ProductDetail/YAGEO/RV0805JR-0710KL?qs=qpJ%252B%252B%252Bdg6p3bGiIDT3p%252B0w%3D%3D&srsltid=AfmBOor_k13NHklcFtUsSFFZvJFpaMbXbqOGeWpW-8F9AYrfn2fu0pLO,Resistor_SMD:R_0805_2012Metric,~
+R2,1,12K 1%,RC0402FR-0712KL,0.1,0.1,https://www.digikey.com/en/products/detail/yageo/RC0402FR-0712KL/726532,Resistor_SMD:R_0805_2012Metric,~
+R3,1,150,RC0402FR-07150RL,0.1,0.1,https://www.digikey.com/en/products/detail/yageo/RC0402FR-07150RL/726543,Resistor_SMD:R_0805_2012Metric,~
+"R5,R6,R11,R14",4,1K,RC0402FR-071KL,0.1,0.4,https://www.digikey.com/es/products/detail/yageo/RC0402FR-071KL/726513,Resistor_SMD:R_0805_2012Metric,~
+SW1,1,SW_Push - SKQGADE010,SKQGADE010,0.31,0.31,https://www.digikey.com/en/products/detail/alps-alpine/SKQGADE010/18109115,strive_foot_prints:SW4-SMD-5.2X5.2X1.5MM,~
+"TP1,TP2",2,TestPoint,,,,,TestPoint:TestPoint_Bridge_Pitch2.54mm_Drill1.0mm,~
+TP3,1,TestPoint,,,,,TestPoint:TestPoint_THTPad_2.0x2.0mm_Drill1.0mm,~
+U1,1,FT232H,FT232HQ,4.09,4.09,https://www.digikey.com.mx/es/products/detail/ftdi-future-technology-devices-international-ltd/FT232HQ-REEL/2614626?srsltid=AfmBOopnWHJrqBcTRVohXInSBw6Ym9OqQqBYHgvkbZQTh7q2Z7Wl0mYV,Package_DFN_QFN:QFN-48-1EP_8x8mm_P0.5mm_EP6.2x6.2mm,http://www.ftdichip.com/Products/ICs/FT232H.htm
+"U2,U3,U4",3,SN74LVC1G125DCKR,SN74LVC1G125DCKR,0.1,0.3,https://www.digikey.com/en/products/detail/texas-instruments/SN74LVC1G125DCKR/385721,strive_foot_prints:SOT65P210X110-5N,SC-70-5
+"U5,U6",2,TAR5SxxU,TAR5S16U,0.49,0.98,https://www.digikey.com/en/products/detail/toshiba-semiconductor-and-storage/TAR5S16U-TE85L-F/10379930,Caravel_Board:SOT-353F,https://toshiba.semicon-storage.com/info/TAR5S16U_datasheet_en_20220801.pdf?did=764&prodName=TAR5S16U
+U7,1,W25Q32FVSS,W25Q32JVSSIQ,0.93,0.93,https://www.digikey.com/es/products/detail/winbond-electronics/W25Q32JVSSIQ/5803981,strive_foot_prints:SOIC127P790X216-8N,
+U9,1,TMUX4053-BQB,TMUX4053PWR,0.58,0.58,https://www.digikey.com/en/products/detail/texas-instruments/TMUX4053PWR/17748481,Caravel_Board:WQFN-16-1EP_2.5x3.5mm_P0.5mm_EP1x2mm,https://www.ti.com/lit/ds/symlink/tmux4051.pdf?ts=1695248347758&ref_url=https%253A%252F%252Fwww.ti.com%252Fproduct%252FTMUX4051
+U10,1,DS1086LU,DS1086LU+T,4.47,4.47,https://www.digikey.com/en/products/detail/analog-devices-inc-maxim-integrated/DS1086LU-T/1196640,Caravel_Board:SOP65P490X110-8N,https://www.analog.com/media/en/technical-documentation/data-sheets/DS1086L.pdf
+U11,1,Caravel_QFN,chip,,0,,Package_DFN_QFN:QFN-64-1EP_9x9mm_P0.5mm_EP7.65x7.65mm,
+U12,1,CY7C1049GN-10VXI,CY7C1049GN-10VXI,5.72,5.72,https://www.digikey.com/en/products/detail/infineon-technologies/CY7C1049G-10VXI/5247556,Package_SO:SOJ-36_10.16x23.495mm_P1.27mm,http://www.issi.com/WW/pdf/61-64C5128AL.pdf
+X1,1,DSC6001_10MHZ,DSC6001JE1B-010.0000,0.59,0.59,https://www.digikey.com/en/products/detail/microchip-technology/DSC6001JE1B-010-0000/24396951,strive_foot_prints:DSC6001JE1A-010.0000,http://cdn-reichelt.de/documents/datenblatt/B400/XO91.pdf
+Y1,1,12MHz,ABM8-272-T3,0.54,0.54,https://www.digikey.com/en/products/detail/abracon-llc/ABM8-272-T3/22472366,strive_foot_prints:CSTNE12M0GH5L000R0,~
+,,,,Total,28.459,,,

@@ -1,0 +1,29 @@
+<nav class="bd-docs-nav bd-links lacerta-global-nav" aria-label="{{ lacerta_sidebar_title }}">
+  <p class="bd-links__title" role="heading" aria-level="1">
+    {{ lacerta_sidebar_title }}
+  </p>
+  {% set active_group = namespace(caption='') %}
+  {% for group in lacerta_sidebar_groups %}
+    {% for prefix in group['prefixes'] %}
+      {% if pagename.startswith(prefix) %}
+        {% set active_group.caption = group['caption'] %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+  <div class="bd-toc-item navbar-nav lacerta-section-nav">
+    {% for group in lacerta_sidebar_groups %}
+      {% if pagename == 'index' or group['caption'] == active_group.caption %}
+        <p class="caption" role="heading" aria-level="2">
+          <span class="caption-text">{{ group['caption'] }}</span>
+        </p>
+        <ul class="nav bd-sidenav">
+          {% for title, doc in group['items'] %}
+            <li class="toctree-l1{% if pagename == doc %} current active{% endif %}">
+              <a class="reference internal{% if pagename == doc %} current{% endif %}" href="{{ pathto(doc) }}">{{ title }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endfor %}
+  </div>
+</nav>

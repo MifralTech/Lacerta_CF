@@ -1,0 +1,6 @@
+{% if lacerta_language_link %}
+  {% set page_depth = (pagename.split('/') | length) - 1 %}
+  <a class="lacerta-language-link" href="{% if lacerta_language == 'en' %}{% for _ in range(page_depth) %}../{% endfor %}es/{% if pagename != 'index' %}{{ pagename }}.html{% endif %}{% else %}{% for _ in range(page_depth + 1) %}../{% endfor %}{% if pagename != 'index' %}{{ pagename }}.html{% endif %}{% endif %}">
+    {{ lacerta_language_link.name }}
+  </a>
+{% endif %}

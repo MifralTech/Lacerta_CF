@@ -1,0 +1,22 @@
+<nav class="lacerta-navbar" aria-label="Portal navigation">
+  {% for item in lacerta_nav %}
+    {% if item.external %}
+      <a class="lacerta-navbar__link lacerta-navbar__link--external" href="{{ item.url }}">
+        {{ item.name }}
+      </a>
+    {% else %}
+      {% set active = namespace(value=false) %}
+      {% for prefix in item.match.split('|') %}
+        {% if pagename == prefix or pagename.startswith(prefix) %}
+          {% set active.value = true %}
+        {% endif %}
+      {% endfor %}
+      <a
+        class="lacerta-navbar__link{% if active.value %} lacerta-navbar__link--active{% endif %}"
+        href="{{ pathto(item.doc) }}"
+      >
+        {{ item.name }}
+      </a>
+    {% endif %}
+  {% endfor %}
+</nav>
