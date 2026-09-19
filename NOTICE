@@ -38,12 +38,16 @@ third-party component, its license and how it is used.
    The standard cells of the sky130_fd_sc_hd library are embedded in the generated layout
    and netlist views (gds, def, lef, lib, spef, mag, verilog/gl, signoff).
 
-4. KiCad libraries
+4. KiCad libraries and the Caravel development board
    The footprints used by PCB/Lacerta_v2_1.kicad_pcb come partly from the official KiCad
    libraries (Capacitor_SMD, Resistor_SMD, LED_SMD, Connector_*, Package_*, TestPoint, ...),
    licensed CC-BY-SA 4.0 with the KiCad library exception that allows using them in a
-   design distributed under any license. The Caravel_Board footprints come from the
-   Efabless/ChipFoundry caravel_board project (Apache License 2.0).
+   design distributed under any license. The Caravel_Board and strive_foot_prints
+   footprint libraries, the Caravel_board symbols and the board design itself (its title
+   block reads "Clear Chip Development Board") derive from the ChipFoundry/Efabless
+   caravel_board project (https://github.com/chipfoundry/caravel_board). That repository
+   does not publish a license, so those files are NOT covered by this project's Apache
+   License 2.0 grant; see THIRD-PARTY-LICENSES.md.
 
 5. Quartus project files
    Interface_Design_Software/development_files/fpga/lacerta.qpf and lacerta.qsf begin with
