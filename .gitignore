@@ -40,3 +40,6 @@ gds/user_project_wrapper.gds
 
 # Large precheck generated GDS outputs
 precheck_results/*/outputs/*.gds
+
+# Sphinx documentation build output
+/build/

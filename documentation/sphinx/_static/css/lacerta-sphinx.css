@@ -1,0 +1,430 @@
+/* Lacerta documentation presentation for PyData Sphinx Theme. */
+:root,
+html[data-theme="light"],
+html[data-bs-theme="light"] {
+  --lacerta-docs-background: var(--mifral-semantic-color-canvas);
+  --lacerta-docs-surface: var(--mifral-semantic-color-surface);
+  --lacerta-docs-surface-subtle: var(--mifral-semantic-color-surface-subtle);
+  --lacerta-docs-text: var(--mifral-semantic-color-text-primary);
+  --lacerta-docs-text-secondary: var(--mifral-semantic-color-text-secondary);
+  --lacerta-docs-text-muted: var(--mifral-semantic-color-text-muted);
+  --lacerta-docs-border: var(--mifral-semantic-color-border-default);
+  --lacerta-docs-border-strong: var(--mifral-semantic-color-border-strong);
+  --lacerta-docs-link: var(--mifral-semantic-color-status-info-text);
+  --lacerta-docs-code-surface: var(--mifral-semantic-color-code-surface);
+  --lacerta-docs-code-text: var(--mifral-semantic-color-code-text);
+  --lacerta-docs-focus: var(--mifral-semantic-color-text-secondary);
+
+  --pst-color-primary: var(--lacerta-docs-text-secondary);
+  --pst-color-secondary: var(--lacerta-docs-text-secondary);
+  --pst-color-background: var(--lacerta-docs-background);
+  --pst-color-surface: var(--lacerta-docs-surface);
+  --pst-color-border: var(--lacerta-docs-border);
+  --pst-color-text-base: var(--lacerta-docs-text);
+  --pst-color-text-muted: var(--lacerta-docs-text-secondary);
+  --pst-color-inline-code: var(--lacerta-docs-text);
+  --pst-color-inline-code-links: var(--lacerta-docs-link);
+  --pst-font-family-base: var(--mifral-font-family-sans);
+}
+
+html[data-theme="dark"],
+html[data-bs-theme="dark"] {
+  color-scheme: dark;
+}
+
+html {
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--lacerta-docs-background);
+  color: var(--lacerta-docs-text);
+  font-family: var(--mifral-font-family-sans);
+}
+
+.bd-page-width {
+  width: 100%;
+  max-width: 90rem;
+  margin-inline: auto;
+}
+
+.bd-header {
+  min-height: 4rem;
+  border-bottom: 1px solid var(--lacerta-docs-border);
+  background: var(--lacerta-docs-surface) !important;
+  box-shadow: none !important;
+}
+
+.navbar-header-items {
+  min-height: 4rem;
+}
+
+.navbar-brand {
+  gap: var(--mifral-space-3);
+  color: var(--lacerta-docs-text) !important;
+  font-weight: var(--mifral-font-weight-semibold);
+}
+
+.navbar-brand img {
+  width: 2.25rem;
+  height: 2.25rem;
+  object-fit: contain;
+}
+
+.navbar-brand p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.lacerta-navbar {
+  display: flex;
+  align-items: stretch;
+  gap: var(--mifral-space-5);
+  min-width: 0;
+}
+
+.lacerta-navbar__link,
+.lacerta-language-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 3.95rem;
+  border-bottom: 2px solid transparent;
+  color: var(--lacerta-docs-text-secondary) !important;
+  font-size: 0.88rem;
+  font-weight: var(--mifral-font-weight-medium);
+  text-decoration: none !important;
+  white-space: nowrap;
+}
+
+.lacerta-navbar__link:is(:hover, :focus),
+.lacerta-navbar__link--active,
+.lacerta-language-link:is(:hover, :focus) {
+  border-bottom-color: var(--lacerta-docs-border-strong);
+  color: var(--lacerta-docs-text) !important;
+}
+
+.search-button-field,
+.search-button {
+  border-color: var(--lacerta-docs-border-strong) !important;
+  background: var(--lacerta-docs-surface-subtle) !important;
+  color: var(--lacerta-docs-text-secondary) !important;
+  box-shadow: none !important;
+}
+
+.bd-container {
+  background: var(--lacerta-docs-background);
+}
+
+.bd-main .bd-content {
+  min-width: 0;
+}
+
+.bd-sidebar-primary {
+  width: 17rem;
+  border-right: 1px solid var(--lacerta-docs-border);
+  background: var(--lacerta-docs-background);
+  font-size: 0.86rem;
+}
+
+.bd-sidebar-primary .page-toc {
+  display: block;
+}
+
+.bd-sidebar-primary .tocsection {
+  margin: var(--mifral-space-7) 0 var(--mifral-space-3);
+  padding: var(--mifral-space-5) 0 0;
+  border-top: 1px solid var(--lacerta-docs-border);
+  color: var(--lacerta-docs-text);
+  font-size: 0.8rem;
+  font-weight: var(--mifral-font-weight-semibold);
+}
+
+.bd-sidebar-primary .tocsection i {
+  display: none;
+}
+
+.bd-sidebar-primary .bd-toc-nav {
+  max-height: none;
+  overflow: visible;
+}
+
+.bd-sidebar-primary .bd-toc-nav a {
+  color: var(--lacerta-docs-text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+.bd-sidebar-primary .bd-toc-nav a:is(:hover, :focus, .active) {
+  color: var(--lacerta-docs-link);
+}
+
+.bd-sidebar-primary .bd-toc-nav .toc-h2 > ul {
+  display: none;
+}
+
+.bd-sidebar-secondary {
+  display: none !important;
+}
+
+.sidebar-primary-items__start {
+  padding-top: var(--mifral-space-5);
+}
+
+.bd-links__title,
+.bd-links__title:hover {
+  color: var(--lacerta-docs-text);
+  font-weight: var(--mifral-font-weight-semibold);
+}
+
+.bd-links .active > a,
+.bd-links a:hover,
+.bd-links a:focus {
+  color: var(--lacerta-docs-link) !important;
+}
+
+.bd-links a {
+  color: var(--lacerta-docs-text-secondary) !important;
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+.bd-article-container {
+  width: 100%;
+  margin-inline: auto;
+  padding: var(--mifral-space-6) var(--mifral-space-8) var(--mifral-space-12);
+}
+
+.bd-article {
+  color: var(--lacerta-docs-text);
+}
+
+.bd-article p,
+.bd-article li {
+  color: var(--lacerta-docs-text);
+}
+
+.bd-article p,
+.bd-article ul,
+.bd-article ol,
+.bd-article blockquote {
+  margin-bottom: 1em;
+}
+
+.bd-article h1,
+.bd-article h2,
+.bd-article h3,
+.bd-article h4 {
+  color: var(--lacerta-docs-text);
+  font-weight: var(--mifral-font-weight-semibold);
+  letter-spacing: -0.012em;
+  line-height: 1.24;
+}
+
+.bd-article h1 {
+  margin-bottom: var(--mifral-space-6);
+  font-size: 2rem;
+  font-weight: var(--mifral-font-weight-bold);
+}
+
+.bd-article h2 {
+  margin-top: var(--mifral-space-10);
+  margin-bottom: var(--mifral-space-4);
+  padding-bottom: var(--mifral-space-2);
+  border-bottom: 1px solid var(--lacerta-docs-border);
+  font-size: 1.5rem;
+}
+
+.bd-article h3 {
+  margin-top: var(--mifral-space-8);
+  margin-bottom: var(--mifral-space-3);
+  font-size: 1.2rem;
+}
+
+.bd-article h4 {
+  margin-top: var(--mifral-space-6);
+  margin-bottom: var(--mifral-space-2);
+  font-size: 1.05rem;
+}
+
+.bd-article a:not(.headerlink):not(.btn) {
+  color: var(--lacerta-docs-link);
+  text-decoration: underline;
+  text-decoration-thickness: 0.075em;
+  text-underline-offset: 0.16em;
+}
+
+.bd-article a:hover {
+  text-decoration-thickness: 0.13em;
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--lacerta-docs-focus) !important;
+  outline-offset: 3px;
+}
+
+.bd-breadcrumbs {
+  margin-bottom: var(--mifral-space-5);
+  color: var(--lacerta-docs-text-secondary);
+  font-size: 0.82rem;
+}
+
+code.literal,
+.bd-article :not(pre) > code {
+  border: 1px solid var(--lacerta-docs-border);
+  border-radius: var(--mifral-radius-xs);
+  background: var(--lacerta-docs-surface-subtle);
+  color: var(--lacerta-docs-text);
+}
+
+.highlight,
+pre {
+  border: 1px solid var(--lacerta-docs-border);
+  border-radius: var(--mifral-radius-sm);
+  background: var(--lacerta-docs-code-surface) !important;
+  color: var(--lacerta-docs-code-text);
+}
+
+pre {
+  padding: var(--mifral-space-4) var(--mifral-space-5);
+  line-height: 1.5;
+}
+
+.bd-article table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--lacerta-docs-border);
+  font-size: 0.92rem;
+}
+
+.bd-article table th {
+  background: var(--lacerta-docs-surface-subtle);
+  color: var(--lacerta-docs-text);
+}
+
+.bd-article table td,
+.bd-article table th {
+  border-color: var(--lacerta-docs-border);
+}
+
+.bd-article img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--lacerta-docs-border);
+  border-radius: var(--mifral-radius-sm);
+}
+
+.prev-next-area a {
+  color: var(--lacerta-docs-link) !important;
+}
+
+.bd-footer {
+  border-top: 1px solid var(--lacerta-docs-border);
+  background: var(--lacerta-docs-surface-subtle);
+  color: var(--lacerta-docs-text-secondary);
+}
+
+.bd-footer-content {
+  width: 100%;
+}
+
+.bd-footer-content__inner {
+  align-items: center;
+}
+
+.bd-footer p {
+  margin: 0;
+  color: var(--lacerta-docs-text-secondary);
+  font-size: 0.78rem;
+}
+
+.bd-footer a {
+  color: var(--lacerta-docs-link);
+}
+
+.lacerta-copyright {
+  display: flex;
+  align-items: center;
+  gap: var(--mifral-space-4);
+  min-height: 4.25rem;
+  font-size: 0.82rem;
+}
+
+.lacerta-copyright__brand {
+  display: inline-flex;
+  padding-right: var(--mifral-space-4);
+  border-right: 1px solid var(--lacerta-docs-border-strong);
+}
+
+.lacerta-copyright__icon {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+
+.lacerta-copyright__icon--dark {
+  display: none;
+}
+
+html[data-theme="dark"] .lacerta-copyright__icon--light,
+html[data-bs-theme="dark"] .lacerta-copyright__icon--light {
+  display: none;
+}
+
+html[data-theme="dark"] .lacerta-copyright__icon--dark,
+html[data-bs-theme="dark"] .lacerta-copyright__icon--dark {
+  display: block;
+}
+
+@media (max-width: 959.98px) {
+  .bd-sidebar-primary {
+    border-right: 0;
+  }
+
+  .bd-article-container {
+    padding: var(--mifral-space-5) var(--mifral-space-4) var(--mifral-space-10);
+  }
+
+  .lacerta-navbar {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .lacerta-navbar__link,
+  .lacerta-language-link {
+    min-height: 2.5rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .bd-article h1 {
+    font-size: 1.75rem;
+  }
+
+  .bd-article h2 {
+    font-size: 1.35rem;
+  }
+
+  .lacerta-copyright {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--mifral-space-3);
+  }
+
+  .lacerta-copyright__brand {
+    padding-right: 0;
+    border-right: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

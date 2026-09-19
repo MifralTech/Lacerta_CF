@@ -1,107 +1,3 @@
-<p align="center">
-  <img src="docs/assets/img/Logo_Black_background_white.svg" alt="Mifral logo" width="220">
-</p>
-
-# Lacerta: Open Hardware Interface Engine for Embedded Systems
-
-![Lacerta logo](docs/assets/img/Lacerta2.png)
-
-## Project Overview
-
-**Lacerta** is an open-source hardware platform that enables the rapid creation of graphical interfaces for embedded systems using custom silicon.
-
-**The whole documentation can be found** [**here**](https://mifraltech.github.io/Lacerta_CF/).
-
-The system allows developers to design graphical interfaces using a graphical configuration tool and deploy them directly to hardware implemented in a custom ASIC integrated with the Caravel SoC platform. The hardware renders the interface in real time and outputs the result to SPI-driven TFT/OLED screens commonly used in embedded devices.
-
-The generated interface may include visual components such as:
-
-- Buttons
-- Horizontal and vertical bars
-- Numeric indicators
-- Status indicators
-<p align="center">
-<img src="docs/assets/img/sample_icons.jpg">
-</p>
-<p align="center">
-<b>Figure 1.</b> Examples of graphical components supported by Lacerta, including buttons, horizontal and vertical bars, numeric indicators, graphics, and status indicators used to visualize real-time system data.
-</p>
-
-The ASIC receives information via UART streams and supports two main modes of operation for updating the display:
-
-1. **Direct Mode:** Data received via UART is sent directly to the user project area. In this mode, the values are updated on the SPI TFT/OLED screen with minimal latency, ideal for simple or time-critical updates.
-
-2. **Processing Mode:** Data from UART is first routed to the integrated RISC-V core, where any mathematical operations, functions, or custom logic can be applied. After processing, the results are sent to the user project area to update the display. This mode is suitable for applications requiring data manipulation or more complex interface logic.
-
-This flexible architecture allows Lacerta to efficiently manage multiple inputs and screen objects using a single UART protocol, adapting to both straightforward and advanced use cases. Any other signal types must be converted to UART beforehand by external interface circuitry or preprocessing devices.
-
-<p align="center">
-<img src="docs/assets/img/flow_sensor_lacertav2.png">
-</p>
-<p align="center">
-<b>Figure 2.</b> Lacerta system concept: signals are processed by the Lacerta ASIC to generate the custom graphical HMI displayed on SPI-driven TFT/OLED displays for compact embedded installations.
-</p>
-
-
-# System Architecture Summary
-
-The Lacerta platform is an open-source embedded graphics system built from four main parts: custom silicon, board-level hardware, firmware/control logic, and interface software. Together, these layers allow a host system to load graphics data, update interface objects, and drive a small SPI-connected display efficiently.
-
-## Core architecture
-
-Lacerta platform is a custom ASIC implemented in the **SKY130 process** and integrated inside the **Caravel user project area**. This subsystem realizes the hardware graphics engine that receives interface commands, updates the internal display state, and generates the output stream presented on the display.
-
-The Lacerta ASIC follows a memory-centric architecture. Configuration data and runtime values enter the system through **UART**. Depending on the selected operating mode, the received data can be forwarded directly to the user project area or first processed by the embedded **Caravel RISC-V** processor. Internal transactions are routed through the **Wishbone interconnect** to the rendering logic, which updates the frame contents stored in memory. The display output block then reads that memory and continuously converts it into the signal required by the connected **SPI TFT/OLED display**.
-
-The ASIC includes the following main modules:
-
-- the external SRAM interface,
-- the TFT SPI interface,
-- the UART command interface,
-- the Wishbone interface,
-- the screen update logic,
-- the drawing logic,
-- and the shared memory subsystem.
-
-
-<p align="center">
-<img src="docs/assets/img/lacerta_blockd_vfinal.png">
-</p>
-<p align="center">
-<b>Figure 3.</b> Block diagram of the Lacerta ASIC inside the Caravel environment. The figure shows how UART data and the embedded Caravel RISC-V processor interact through the Wishbone-connected control path, rendering logic, and memory subsystem; the updated frame data is then read by the display output block to drive the screen.
-</p>
-
-
-## Main subsystems
-
-### Memory subsystem
-
-The memory subsystem manages buffered access to external SRAM. It uses FIFOs, read/write buffering, and arbitration logic so several blocks can share memory safely without needing to handle low-level SRAM timing directly.
-
-### Screen output subsystem
-
-The screen path reads pixel data from memory and converts it into SPI transactions for the display. It supports TFT initialization, full or partial region refreshes, and a color lookup mechanism that maps compact pixel codes to RGB565 values. This reduces memory usage and makes repeated HMI colors efficient to store.
-
-### Drawing subsystem
-
-The drawing logic updates only the parts of the image that change. The `mask_generator` reads current pixel data, modifies selected regions based on object type, writes the result back to SRAM, and then triggers a refresh of the affected rectangle. This makes the system well suited for HMI elements such as bars, graphs, booleans, and segmented displays.
-
-### Command and control subsystem
-
-The control path is coordinated by `command_arbiter_decoder`, which receives transactions from UART and Wishbone interfaces and turns them into actions such as memory access, object redraws, screen refreshes, color-table updates, and reset/control operations.
-
-### UART and Wishbone interfaces
-
-UART provides an external host-facing command port for loading assets, configuring the display, and triggering updates. Wishbone provides processor-oriented access to both control registers and shared memory, allowing the embedded Caravel processor or another SoC master to work with the same graphics system.
-
-## Typical operation
-
-In normal use, a host first loads graphics assets or configuration data into SRAM. The display is initialized, then object updates are triggered through UART or processor commands. The drawing engine modifies only the required image region in memory, and the screen subsystem refreshes only that changed rectangle on the TFT. This avoids full-screen redraws and improves efficiency for dynamic interfaces.
-
-## Lacerta board role
-
-The Lacerta Board packages the SoC with the supporting hardware needed for practical use, including power regulation, clocking, USB-to-serial connectivity, SPI Flash support, GPIO access, and display/peripheral connections. It serves as the physical platform for development, testing, and demonstration of the Lacerta graphics architecture.
-
 # System Development
 
 The development of the Lacerta platform spans the complete hardware and software realization flow, from digital design and verification to physical implementation and system-level integration. This section describes the main stages used to transform the Lacerta concept into a functional platform, including RTL design, verification, layout generation, gate-level validation, PCB development, and the creation of the interface design software.
@@ -109,8 +5,6 @@ The development of the Lacerta platform spans the complete hardware and software
 Together, these activities define the engineering workflow followed to implement, test, and deploy Lacerta as an open-source embedded graphical interface system. Each subsection highlights a different part of this process and explains how the individual development tasks contribute to the final platform.
 
 ## Lacerta RTL
-
-**RTL code can be found** [**here**](https://github.com/MifralTech/Lacerta_CF/tree/main/verilog/rtl).
 
 ### System Purpose
 
@@ -126,6 +20,13 @@ At a functional level, the system must:
 - and transmit the final bytes to the TFT controller.
 
 The design is organized around a shared memory architecture. Instead of each module touching the SRAM directly, all active clients use a common memory subsystem with buffered read and write channels, as shown in the figure below.
+
+:::{figure} ../assets/img/lacerta_blockd_vfinal.png
+:alt: Block diagram of the Lacerta ASIC inside the Caravel environment
+:align: center
+
+**Figure 5.** Block diagram of the Lacerta ASIC inside the Caravel environment. The figure shows how UART data and the embedded Caravel RISC-V processor interact through the Wishbone-connected control path, rendering logic, and memory subsystem; the updated frame data is then read by the display output block to drive the screen.
+:::
 
 ### High-Level Functional Flow
 
@@ -188,6 +89,481 @@ Another important top-level task is Wishbone routing. `dig_top` chooses whether 
 - `wb_slave_memory_mapped` for control/MMIO accesses,
 - or `wb_slave_to_mem_sys_ports` for direct SRAM-backed data accesses.
 
+### Command and Control Path
+
+#### `command_arbiter_decoder.v`
+
+:::{figure} ../assets/img/command_arbiter_decoder.svg
+:alt: Block diagram of the command_arbiter_decoder module
+:align: center
+
+**Figure 6.** Block diagram of the command_arbiter_decoder module, showing how UART and Wishbone control transactions are decoded into drawing, screen, memory-access, and processor-control signals.
+:::
+
+
+`command_arbiter_decoder` is the central command interpreter of the system.
+
+It receives internal memory-mapped requests from two sources:
+
+- the UART path,
+- the Wishbone MMIO path.
+
+It translates those requests into internal control actions for the rest of the design.
+
+Its outputs control four main areas:
+
+1. Host memory access  
+   It drives the UART-side read and write burst controls used to move data between the host and SRAM.
+
+2. Drawing configuration  
+   It loads:
+   - object type,
+   - object width and height,
+   - object screen position,
+   - starting pixel address,
+   - starting mask address,
+   - object value,
+   - and the drawing start pulse.
+
+3. Screen configuration  
+   It programs:
+   - TFT SPI clock divider,
+   - screen initialization memory entries,
+   - color-mapping table entries,
+   - sidebar-load requests,
+   - and direct screen-refresh requests.
+
+4. Processor management  
+   It controls:
+   - processor memory-path enable,
+   - software reset request,
+   - and the safe generation of `up_soft_reset`.
+
+The UART address map and Wishbone MMIO map are decoded inside this block. A write to a given mapped address becomes a specific internal action. For example, some addresses configure object geometry, others load TFT initialization entries, and others trigger drawing or screen refresh.
+
+Functionally, this module acts like the control plane of the system. It does not process pixels itself. Instead, it converts host or processor requests into the control pulses and configuration values needed by the memory, drawing, and display engines.
+
+### UART Communication Path
+
+#### `uart/uart_ip_memory_mapped.v`
+
+:::{figure} ../assets/img/uart_ip_memory_mapped.svg
+:alt: Block diagram of the uart_ip_memory_mapped module
+:align: center
+
+**Figure 7.** Block diagram of the uart_ip_memory_mapped module, showing the UART packet-decoding path and its conversion into internal memory-mapped read and write transactions.
+:::
+
+This module is the serial front-end used by an external host.
+
+It presents a simple internal interface:
+
+- `mem_we`
+- `mem_wdata`
+- `mem_waddr`
+- `mem_re`
+- `mem_raddr`
+- `mem_rdata`
+- `mem_rdy`
+
+Through this interface, the rest of the RTL can treat UART traffic as ordinary memory-mapped transactions.
+
+#### `uart/uart_ip_memory_mapped_ctrl_fsm.v`
+
+This FSM decodes the byte stream received through UART and translates it into internal read and write requests. It is responsible for packet interpretation and for sequencing the response path when read data must be returned.
+
+#### `uart/uart_ip.v`
+
+This module wraps the low-level UART transceiver logic. It combines the receiver, transmitter, and control/status registers into one UART peripheral.
+
+#### Supporting UART Modules
+
+The remaining UART modules implement the details of the serial link:
+
+- `uart_recv.v` samples incoming serial bits and reconstructs bytes.
+- `uart_tnsm.v` shifts outgoing bytes onto the TX line.
+- `uart_clk_gen.v` generates the timing enables used by receive and transmit logic.
+- `uart_control_reg.v` stores control settings.
+- `uart_status_reg.v` stores UART status flags.
+- `uart_two_ff_synchronizer.v` synchronizes asynchronous input behavior.
+- `uart_edge_detector.v` detects transitions used by the receiver path.
+
+Together these modules form the host command entrance to the system.
+
+### Wishbone Control and Memory Paths
+
+#### `wb_slave/wb_slave_memory_mapped.v`
+
+:::{figure} ../assets/img/wb_slave_memory_mapped.svg
+:alt: RTL block diagram of the wb_slave_memory_mapped module, showing the Wishbone slave interface
+:align: center
+:width: 400px
+
+**Figure 8.** RTL block diagram of the wb_slave_memory_mapped module, showing the Wishbone slave interface, the internal memory read/write control signals, and the acknowledge/data return path used for memory-mapped transactions.
+:::
+
+This module converts Wishbone bus transactions into internal control transactions.
+
+Its function is straightforward:
+
+- on a Wishbone write, it captures address, data, and byte mask and asserts the internal write request,
+- on a Wishbone read, it captures the address and asserts the internal read request,
+- it waits for the internal acknowledge or ready signal,
+- then it returns data and asserts `wb_ack_o`.
+
+This path is used for control-style operations rather than bulk image transfer. In practice, it gives a processor a way to configure objects, start updates, program the screen subsystem, and read status.
+
+#### `wb_slave/wb_slave_to_mem_sys_ports.v`
+
+This module is the direct Wishbone-to-memory bridge.
+
+Its purpose is different from `wb_slave_memory_mapped`: instead of controlling registers, it moves data between a Wishbone master and the shared memory subsystem.
+
+Because the Wishbone side is 32 bits wide while the internal main memory path is 8 bits wide, this module must:
+
+- break a 32-bit write into byte-oriented transfers,
+- or collect several byte reads and reassemble them into one Wishbone word.
+
+For writes, it:
+
+- loads the write start address,
+- requests a write burst,
+- pushes the write data into the selected write buffer,
+- waits for `wpg_ack`,
+- then acknowledges the Wishbone transaction.
+
+For reads, it:
+
+- loads the read start address,
+- requests a read burst long enough to rebuild one 32-bit word,
+- consumes bytes from the read buffer,
+- assembles them in `wb_dat_o`,
+- and acknowledges only when the full word is ready.
+
+This module is the processor-side path for direct image-memory access.
+
+### Shared Memory Subsystem
+
+#### `memory_system/mem_sys.v`
+
+:::{figure} ../assets/img/mem_sys.svg
+:alt: Block diagram of the mem_sys module, showing the shared memory architecture, including read/write buffers
+:align: center
+
+**Figure 9.** Block diagram of the mem_sys module, showing the shared memory architecture, including read/write buffers, arbitration logic, and the interface between multiple clients and external SRAM.
+:::
+
+
+`mem_sys` is the core shared-memory manager.
+
+It sits between all clients and the physical SRAM interface. Its role is to isolate clients from SRAM timing and to arbitrate memory traffic through buffered burst-based transfers.
+
+The subsystem has two major data directions:
+
+- read path: SRAM to read buffers,
+- write path: write buffers to SRAM.
+
+Clients do not directly perform random reads and writes. Instead, each client provides:
+
+- a start address,
+- a burst length,
+- a busy/start indication,
+- and buffer read or write activity.
+
+`mem_sys` then coordinates the actual memory movement and generates acknowledgements when bursts complete.
+
+#### `memory_system/buffers.v`
+
+This module instantiates all FIFOs used by the shared memory system.
+
+There are two buffer groups:
+
+1. Write buffers  
+   Producers place bytes here before those bytes are committed into SRAM.
+
+2. Read buffers  
+   Consumers receive bytes here after those bytes are fetched from SRAM.
+
+The buffering is important because each client runs according to its own local state machine, while SRAM access is shared. The FIFOs absorb timing differences and allow burst transfers to proceed without forcing all blocks to be cycle-by-cycle synchronized.
+
+#### `memory_system/sfifo.v`
+
+`sfifo` is the generic synchronous FIFO used to build the read and write buffers.
+
+It provides the basic queueing behavior required for:
+
+- temporary storage,
+- empty/full protection,
+- and rate decoupling between clients and memory arbitration logic.
+
+#### `memory_system/buffers_filler.v`
+
+This block manages the memory read direction.
+
+Its functional sequence is:
+
+1. Watch all read-request channels.
+2. Detect when a client has started a burst read by asserting its `rpg_busy`.
+3. Capture the burst start address and length.
+4. Select a channel that still needs data.
+5. Issue SRAM reads through `main_mem_rden` and `main_mem_rd_addr`.
+6. Write the returned byte into the selected read buffer.
+7. Decrement the remaining burst length.
+8. Assert the corresponding `rpg_ack` when the burst is complete.
+
+It also tracks whether a burst is ongoing per client through `rpg_burst_ongoing`.
+
+One practical effect of this design is that the screen path, drawing path, UART path, and Wishbone path can all use the same SRAM read port without each building its own direct SRAM controller.
+
+#### `memory_system/buffers_discharger.v`
+
+This block manages the memory write direction.
+
+Its functional sequence is:
+
+1. Watch all write-request channels.
+2. Detect when a client has started a burst write by asserting its `wpg_busy`.
+3. Capture the burst start address and length.
+4. Select a channel whose write buffer contains data.
+5. Present the selected byte on `main_mem_wr_data`.
+6. Assert `main_mem_wren` and wait for `main_mem_wr_data_ack`.
+7. Advance the address and remaining-burst count.
+8. Assert `wpg_ack` when the full burst has been stored.
+
+This turns buffered client writes into ordered SRAM transactions.
+
+#### `memory_system/sram_controller.v`
+
+`sram_controller` is the physical SRAM interface adapter.
+
+It converts the abstract memory signals from `mem_sys` into SRAM pin behavior:
+
+- `sram_addr`
+- `sram_data_out`
+- `sram_data_oeb`
+- `sram_oe_n`
+- `sram_we_n`
+
+Its current behavior is simple and direct:
+
+- reads have priority over writes,
+- write acknowledge is generated when a write is active and no read is taking priority,
+- read data is sampled from the SRAM input and returned synchronously through `main_mem_rd_data`,
+- `main_mem_rd_data_valid` is pulsed when the sampled read byte is valid.
+
+This module is the final bridge between internal logic and the external memory device.
+
+### Drawing Engine
+
+#### `drawing/mask_generator.v`
+
+:::{figure} ../assets/img/mask_generator.svg
+:alt: Block diagram of the mask_generator module
+:align: center
+
+**Figure 10.** Block diagram of the mask_generator module, showing the read-modify-write drawing flow used to update image regions in memory and trigger partial screen refreshes.
+:::
+
+
+`mask_generator` is the hardware block that updates objects inside the stored image.
+
+It does not generate a full image from scratch. Instead, it performs a controlled read-modify-write operation over a specific rectangular region already stored in SRAM.
+
+Its main inputs are:
+
+- `start`
+- `obj_type`
+- `obj_width`
+- `obj_height`
+- `obj_st_pix`
+- `obj_st_mask`
+- `obj_value`
+
+Its outputs connect directly to one read channel and one write channel of the shared memory subsystem.
+
+##### Functional Behavior of `mask_generator`
+
+When `start` is asserted:
+
+1. The module loads the object geometry and starting addresses.
+2. It identifies the object mode from `obj_type`.
+3. It starts the necessary memory bursts.
+4. It processes the object row by row.
+5. It reads existing image bytes from SRAM through its read buffer.
+6. It computes the updated byte according to the object mode.
+7. It writes the updated byte back through its write buffer.
+8. When the region update is complete, it triggers the screen refresh path.
+
+##### Supported Drawing Modes
+
+The mode selected by `obj_type` determines how the pixel byte is modified:
+
+- `BOOLEAN_TYPE`  
+  Used for simple on/off style behavior.
+
+- `HORIZONTAL_INCREMENTAL_TYPE`  
+  The object value is compared against the current column count, so the visible state progresses across the width of the object.
+
+- `VERTICAL_INCREMENTAL_TYPE`  
+  The object value is compared against the current row count, so the visible state progresses across the height of the object.
+
+- `GRAPH_TYPE`  
+  Used for graph-like updates where the stored state is shifted and the new value affects the last part of the row behavior.
+
+- `MASK_TYPE`  
+  The module first reads mask bits from SRAM, stores them locally, and then applies those bits to the target image bytes.
+
+##### Relation Between Drawing and Screen Refresh
+
+After finishing the memory modification, `mask_generator` asserts `ss_start`.
+
+This does not send pixels directly. Instead, it tells the screen subsystem that a region is ready to be fetched from memory and transmitted to the TFT. In other words:
+
+- `mask_generator` edits the stored image,
+- `screen_system` displays the edited image.
+
+This separation keeps the drawing logic independent from the SPI timing logic.
+
+### Screen Output Subsystem
+
+#### `screen/screen_system.v`
+
+:::{figure} ../assets/img/screen_system.svg
+:alt: Block diagram of the screen_system module, showing the interaction between the TFT control FSM
+:align: center
+
+**Figure 11.** Block diagram of the screen_system module, showing the interaction between the TFT control FSM, the SPI master, the color-mapping table, and the memory-read interface used to send image data to the TFT screen.
+:::
+
+`screen_system` is the top block for TFT output.
+
+It integrates three specialized modules:
+
+- `tft_control_fsm`
+- `spi_master`
+- `color_mapping_table`
+
+This block has two main responsibilities:
+
+1. configure and initialize the TFT controller,
+2. send image data from SRAM to the TFT after a refresh request.
+
+##### `screen/tft_control_fsm.v`
+
+This is the main controller for the display side.
+
+It coordinates:
+
+- initialization-memory access,
+- SPI byte transmission,
+- memory reads for pixel fetch,
+- color-map lookup,
+- frame-window programming,
+- sidebar transfer,
+- and completion signaling.
+
+###### TFT Initialization Flow
+
+The module contains a small initialization memory, written by the control path through:
+
+- `ss_wren_reg`
+- `ss_wraddr_reg`
+- `ss_wrdata_reg`
+
+Each entry stores a 2-bit type plus an 8-bit value. The type identifies whether the entry represents:
+
+- a TFT command,
+- TFT data,
+- or a delay.
+
+During initialization, `tft_control_fsm` steps through this memory and sends the correct sequence to the display. It also manages reset timing through `res` and an internal millisecond delay mechanism.
+
+###### Frame-Refresh Flow
+
+When `fetch_frame` is asserted, the FSM:
+
+1. receives the rectangle coordinates and size,
+2. sends the TFT column-address command,
+3. sends the TFT row-address command,
+4. sends the RAM-write command,
+5. starts a memory burst from `frame_st_pix`,
+6. reads the image bytes from its read buffer,
+7. converts or forwards pixel data,
+8. and streams the bytes to the TFT through SPI.
+
+The rectangle can be smaller than the full screen, which is the basis of partial refresh behavior.
+
+###### Active-Area Pixel Interpretation
+
+For the active HMI area, the bytes read from SRAM are interpreted as compact pixel information rather than direct 16-bit RGB565 color.
+
+The FSM extracts a color selector from each memory byte and sends that selector to `color_mapping_table`. The resulting 16-bit RGB565 value is then transmitted to the TFT as two bytes.
+
+This reduces image-memory cost in the active area because each pixel consumes only one byte in SRAM while the final display still uses 16-bit color.
+
+###### Sidebar Flow
+
+The screen subsystem also supports a sidebar area.
+
+For the sidebar, SRAM data is treated differently:
+
+- each pixel uses two bytes,
+- the bytes are sent directly to the TFT,
+- and no color-map conversion is required.
+
+The sidebar transfer starts when `ss_ld_sidebar` is asserted.
+
+##### `screen/color_mapping_table.v`
+
+This module stores the palette used by the active HMI area.
+
+Its function is simple but important:
+
+- write path: the control logic programs a 16-bit RGB565 color into an indexed entry,
+- read path: `tft_control_fsm` provides a color index and receives the corresponding RGB565 value.
+
+Because the palette is programmable, the same stored image codes can be associated with different real colors without rewriting the image bytes in SRAM.
+
+##### `screen/spi_master.v`
+
+This module is the byte transmitter for the TFT link.
+
+It receives:
+
+- a start/transaction request,
+- a byte to send,
+- and a clock-divider value.
+
+It produces:
+
+- SPI clock,
+- chip select,
+- MOSI output,
+- busy/ack/done handshakes.
+
+`tft_control_fsm` uses this block for every TFT command byte and every pixel byte. This keeps protocol sequencing in the FSM and bit-level serial shifting in a dedicated SPI block.
+
+### Functional Meaning of the Stored Image
+
+The system uses SRAM not just as a raw frame buffer, but as a structured image store for the HMI.
+
+The stored content includes:
+
+- active-area image bytes,
+- mask data for symbolic objects,
+- sidebar pixel data,
+- and potentially processor-accessible data regions.
+
+Important parameters from `defines.sv` shape this organization:
+
+- screen width: 320
+- screen height: 240
+- active screen width: 270
+- sidebar width: 50
+- color-map entries: 16
+
+This means the active area and the sidebar are handled differently by the display logic.
+
 ### End-to-End Operation Examples
 
 #### Example 1: Loading image data from UART
@@ -238,24 +614,13 @@ Another important top-level task is Wishbone routing. `dig_top` chooses whether 
 
 
 ## Lacerta Verification
-
-**Verilog TB code can be found** [**here**](https://github.com/MifralTech/Lacerta_CF/tree/main/verilog/dv/lacerta).
-
 A layered verification strategy was used to validate Lacerta from block level up to full-system behavior. The intent was not only to prove that individual modules operate correctly in isolation, but also to verify that the complete command, memory, drawing, and display paths remain coherent when exercised through the same interfaces used in deployment.
 
 At the block level, dedicated environments were created for the UART front end, the shared memory subsystem, the Wishbone adapters, the command decoder, and the display-related logic. These environments focused on local protocol correctness, handshake legality, data stability, and forward progress. The later sections of this document list the principal checks captured for each block.
 
 At the system level, the main integration environment is `verif/dig_top_tb.sv`. This testbench drives the top-level `dig_top` instance through the UART path, connects the design to an SRAM behavioral model (`CY7C1049GN_i`), and observes the TFT SPI outputs exactly as a real deployment would use them. In practice, this makes the testbench an end-to-end verification vehicle: a command is injected as UART traffic, decoded by the control plane, executed through the memory subsystem, and finally checked either at the SRAM image or at the TFT serial output.
 
-<p align="center">
-<img src="docs/assets/img/Architecture overview.png">
-</p>
-<p align="center">
-<b>Figure 4.</b> The diagram summarizes the main verification components, including the clock and reset infrastructure, golden reference data, stimulus path, UART bus functional model, SRAM model, and checker logic used to validate the DUT behavior during gate-level simulation.
-</p>
-
-More information about the simulation flow, active checkers, and expected data paths can be found in [dig_top_tb_flow_diagram.html](docs/assets/downloads/dig_top_tb_flow_diagram.html).
-
+More information about the simulation flow, active checkers, and expected data paths can be found in <a href="dig_top_tb_flow_diagram.html">dig_top_tb_flow_diagram.html</a>.
 
 ### System-Level Verification
 
@@ -375,7 +740,7 @@ Together, these checkers provide both transaction-level and bit-level confidence
 
 ### Relation to GLS and Documentation Artifacts
 
-This same end-to-end style is especially useful for gate-level simulation because it exercises long control sequences, back-pressure conditions, and external-interface timing without simplifying the problem to a purely combinational comparison. More detailed information about the simulation flow, active checkers, and expected data paths can be found in [dig_top_tb_flow_diagram.html](docs/assets/downloads/dig_top_tb_flow_diagram.html). That file documents the actual structure implemented in `dig_top_tb.sv`: UART-driven initialization, sidebar transfer, color-map programming, full active-area fetch, constrained-random object drawing with per-object SRAM comparison, and final processor enable.
+This same end-to-end style is especially useful for gate-level simulation because it exercises long control sequences, back-pressure conditions, and external-interface timing without simplifying the problem to a purely combinational comparison. More detailed information about the simulation flow, active checkers, and expected data paths can be found in <a href="dig_top_tb_flow_diagram.html">dig_top_tb_flow_diagram.html</a>. That file documents the actual structure implemented in `dig_top_tb.sv`: UART-driven initialization, sidebar transfer, color-map programming, full active-area fetch, constrained-random object drawing with per-object SRAM comparison, and final processor enable.
 
 Overall, the Lacerta verification methodology combines block-level protocol checking, system-level end-to-end stimulus, reference-model comparison, and gate-level observability. This gives strong confidence that the platform is not only logically correct, but also integration-ready across its communication, memory, drawing, and display subsystems.
 
@@ -447,14 +812,11 @@ The verification plan for the **Mask Generator** block validates correct start/b
 5. Verify that `wr_buff_wren` cannot be asserted when `wr_buff_full` is high.
 6. Verify that `rpg_busy`, `wpg_busy`, `rpg_ack`, `wpg_ack`, `wr_buff_full`, `rd_buff_rden`, and `wr_buff_wren` can be asserted only while `busy` is high.
 
-
 ## Lacerta RTL Verification
-
-**Verilog TB code can be found** [**here**](https://github.com/MifralTech/Lacerta_CF/tree/main/verilog/dv/lacerta).
 
 The RTL simulation stage was used to verify the functional behavior of the Lacerta top-level design and to confirm the correctness of the TFT initialization transaction sequence before physical implementation. In this test, the simulation output shows that the expected delays were observed and that the initialization values stored in `tft_init_mem` were transmitted correctly to `spi_master`. The resulting log provides evidence that the initialization FSM and SPI output path behave as intended during the early display bring-up sequence at the RTL verification stage.
 
-A section from the RTL simulation log is shown below. The complete log file is available for download here: [lacerta_gate_level_simulation.log](docs/assets/downloads/lacerta_gate_level_simulation.log).
+A section from the RTL simulation log is shown below. The complete log file is available for download here: <a href="lacerta_gate_level_simulation.log">lacerta_gate_level_simulation.log</a>.
 
 ```text
 Time resolution is 1 ps
@@ -491,29 +853,7 @@ PASS: correct tft_init_mem data 0013 for entry 22 was sent to spi_master
 ```
 
 
-### RTL/GL simulation
-
-A custom script was developed to execute RTL and GL simulations with the Caravel infrastructure, as the default Caravel simulation flow was out of date and only supported cocotb-based testbenches. This approach was necessary to correctly run assertion-based testbenches and ensure compatibility with the current Lacerta verification environment, which relies on SystemVerilog assertions and traditional testbench flows.
-
-The custom script, located in the [`dv_setup`](dv_setup) directory (`lacerta/dv_setup`), automates the setup and execution of both RTL and gate-level (GL) simulations. It handles environment configuration, Makefile patching, and the selection of the appropriate simulation mode (`SIM_MODE=RTL` or `SIM_MODE=GL`). The script also allows users to select which DV test to run via the `DV_TEST` variable, making it flexible for different verification scenarios.
-
-This approach ensures that all assertions and checkers in the testbenches are properly evaluated during simulation, which is not possible with the default Caravel cocotb-only flow. The script supports both host-based and Docker-based simulation environments, making it suitable for a variety of development setups.
-
-The main testbench (`lacerta_tb.sv`) and its associated waveform files can be found in the `lacerta/verilog/dv/lacerta` folder. The following figure shows an example waveform generated during simulation:
-
-<p align="center">
-  <img src="docs/assets/img/waveform.png" width="700">
-</p>
-<p align="center">
-<b>Figure 6.</b> Example simulation waveform from the Lacerta RTL testbench, illustrating the verification an initial configuration of the memory_system through UART using IO port 5 an 6.
-</p>
-
-For detailed instructions on how to use the RTL/GL simulation flow, refer to the documentation and scripts in
-
 ## Hardening Configuration
-
-**Librelane configuration can be found** [**here**](https://github.com/MifralTech/Lacerta_CF/tree/main/openlane/user_project_wrapper).
-
 
 This page documents the OpenLane hardening setup used for the `user_project_wrapper` flow in Lacerta and records the top-level hardening option selected for the project.
 
@@ -616,124 +956,69 @@ These settings describe the intended behavior of a robust full-wrapper hardening
 
 
 
-<p align="center">
-<img src="docs/assets/img/klayout_lacerta.png" width="500">
-</p>
-<p align="center">
-<b>Figure 5.</b> KLayout view of the Lacerta custom ASIC layout, showing the physical implementation of the design within the SKY130 Caravel user project area.
-</p>
+:::{figure} ../assets/img/klayout_lacerta.png
+:alt: KLayout view of the Lacerta custom ASIC layout
+:align: center
+
+**Figure 5.** KLayout view of the Lacerta custom ASIC layout, showing the physical implementation of the design within the SKY130 Caravel user project area.
+:::
 
 To complement the layout view, Table 1 summarizes the main implementation metrics of the Lacerta chip extracted from the final OpenLane hardening results. These values provide a compact overview of the physical size, logic complexity, utilization, power, timing, and routing quality achieved for the final ASIC integration.
 
-| Parameter                        | Value                        |
-|-----------------------------------|------------------------------|
+| Parameter | Value |
+| --- | --- |
 | Technology / integration platform | SKY130 in Caravel user project area |
-| Die size                         | 2920 um x 3520 um            |
-| Die area                         | 10.2784 mm²                  |
-| Core size                        | 2908.58 um x 3497.92 um      |
-| Core area                        | 10.1740 mm²                  |
-| User I/O count                    | 645                          |
-| Standard-cell instance count      | 170,896                      |
-| Standard-cell area                | 465,176 um²                  |
-| Core utilization                  | 4.57%                        |
-| Total power                       | 0.0250 W                     |
-| Internal power                    | 0.0186 W                     |
-| Switching power                   | 0.0065 W                     |
-| Leakage power                     | 4.02e-7 W                    |
-| Worst setup slack (WNS)           | 0.0 ns                       |
-| Worst hold slack (WNS)            | 0.0 ns                       |
-| Worst setup slack margin          | 0.9290 ns                    |
-| Worst hold slack margin           | 0.0151 ns                    |
-| Total negative setup slack (TNS)  | 0.0 ns                       |
-| Total negative hold slack (TNS)   | 0.0 ns                       |
-| Setup violations                  | 0                            |
-| Hold violations                   | 0                            |
-| Final routing DRC errors          | 0                            |
-| Total routed wirelength           | 1,287,756 um                 |
-| Total vias                        | 159,152                      |
-| Power-grid violations             | 0                            |
+| Die size | 2920 um x 3520 um |
+| Die area | 10.2784 mm^2 |
+| Core size | 2908.58 um x 3497.92 um |
+| Core area | 10.1740 mm^2 |
+| User I/O count | 645 |
+| Standard-cell instance count | 171,157 |
+| Standard-cell area | 466,947 um^2 |
+| Core utilization | 4.59% |
+| Total power | 0.0261 W |
+| Internal power | 0.0193 W |
+| Switching power | 0.0068 W |
+| Leakage power | 4.02e-7 W |
+| Worst setup slack (WNS) | 0.0 ns |
+| Worst hold slack (WNS) | 0.0 ns |
+| Worst setup slack margin | 0.3046 ns |
+| Worst hold slack margin | 0.1247 ns |
+| Total negative setup slack (TNS) | 0.0 ns |
+| Total negative hold slack (TNS) | 0.0 ns |
+| Setup violations | 0 |
+| Hold violations | 0 |
+| Final routing DRC errors | 0 |
+| Total routed wirelength | 1,305,691 um |
+| Total vias | 160,121 |
+| Power-grid violations | 0 |
+
 
 Table 2 summarizes the post-layout timing and electrical-check results for the Lacerta chip across the main process, voltage, and temperature corners evaluated during signoff. It highlights hold and setup slack, total negative slack, violation counts, and basic design-rule indicators such as maximum capacitance and slew violations. Together, these results provide a compact view of implementation robustness and show that the design closes timing without setup or hold violations across all analyzed corners, while only a small number of electrical violations remain in the worst-case conditions.
 
-| Corner / Group        | Hold Worst Slack (ns) | Reg-to-Reg Hold (ns) | Hold TNS (ns) | Hold Violations | Setup Worst Slack (ns) | Reg-to-Reg Setup (ns) | Setup TNS (ns) | Setup Violations | Max Cap Violations | Max Slew Violations |
-|-----------------------|---------------------:|---------------------:|--------------:|----------------:|-----------------------:|----------------------:|---------------:|-----------------:|-------------------:|--------------------:|
-| Overall               | 0.0151               | 0.2878               | 0.0000        | 0               | 0.9290                | 8.1509               | 0.0000         | 0                | 6                  | 47                  |
-| `nom_tt_025C_1v80`    | 0.2248               | 0.6272               | 0.0000        | 0               | 6.0692                | 13.9265              | 0.0000         | 0                | 0                  | 0                   |
-| `nom_ss_100C_1v60`    | 0.0929               | 1.4592               | 0.0000        | 0               | 0.9719                | 8.4898               | 0.0000         | 0                | 2                  | 15                  |
-| `nom_ff_n40C_1v95`    | 0.1791               | 0.2879               | 0.0000        | 0               | 7.8085                | 15.9307              | 0.0000         | 0                | 0                  | 0                   |
-| `min_tt_025C_1v80`    | 0.2767               | 0.6248               | 0.0000        | 0               | 6.1163                | 14.1220              | 0.0000         | 0                | 0                  | 0                   |
-| `min_ss_100C_1v60`    | 0.1648               | 1.4278               | 0.0000        | 0               | 0.9884                | 8.8070               | 0.0000         | 0                | 1                  | 9                   |
-| `min_ff_n40C_1v95`    | 0.2279               | 0.2885               | 0.0000        | 0               | 7.8413                | 16.0592              | 0.0000         | 0                | 0                  | 0                   |
-| `max_tt_025C_1v80`    | 0.1682               | 0.6288               | 0.0000        | 0               | 6.0312                | 13.7420              | 0.0000         | 0                | 0                  | 0                   |
-| `max_ss_100C_1v60`    | 0.0151               | 1.4767               | 0.0000        | 0               | 0.9290                | 8.1509               | 0.0000         | 0                | 6                  | 47                  |
-| `max_ff_n40C_1v95`    | 0.1249               | 0.2878               | 0.0000        | 0               | 7.7814                | 15.8059              | 0.0000         | 0                | 0                  | 0                   |
 
-## Precheck log
- ```
+| Corner / Group | Hold Worst Slack (ns) | Reg-to-Reg Hold (ns) | Hold TNS (ns) | Hold Violations | Setup Worst Slack (ns) | Reg-to-Reg Setup (ns) | Setup TNS (ns) | Setup Violations | Max Cap Violations | Max Slew Violations |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Overall | 0.1247 | 0.3086 | 0.0000 | 0 | 0.3046 | 3.9897 | 0.0000 | 0 | 5 | 16 |
+| `nom_tt_025C_1v80` | 0.2935 | 0.6345 | 0.0000 | 0 | 5.2682 | 11.3491 | 0.0000 | 0 | 0 | 0 |
+| `nom_ss_100C_1v60` | 0.8170 | 1.4920 | 0.0000 | 0 | 0.3652 | 4.3456 | 0.0000 | 0 | 2 | 2 |
+| `nom_ff_n40C_1v95` | 0.1777 | 0.3121 | 0.0000 | 0 | 6.9450 | 13.9299 | 0.0000 | 0 | 0 | 0 |
+| `min_tt_025C_1v80` | 0.3587 | 0.6291 | 0.0000 | 0 | 5.3281 | 11.5404 | 0.0000 | 0 | 0 | 0 |
+| `min_ss_100C_1v60` | 0.8853 | 1.4690 | 0.0000 | 0 | 0.4830 | 4.7069 | 0.0000 | 0 | 1 | 2 |
+| `min_ff_n40C_1v95` | 0.2267 | 0.3086 | 0.0000 | 0 | 6.9862 | 14.0569 | 0.0000 | 0 | 0 | 0 |
+| `max_tt_025C_1v80` | 0.2242 | 0.6405 | 0.0000 | 0 | 5.2312 | 11.1618 | 0.0000 | 0 | 0 | 0 |
+| `max_ss_100C_1v60` | 0.7488 | 1.5180 | 0.0000 | 0 | 0.3046 | 3.9897 | 0.0000 | 0 | 5 | 16 |
+| `max_ff_n40C_1v95` | 0.1247 | 0.3165 | 0.0000 | 0 | 6.9196 | 13.8115 | 0.0000 | 0 | 0 | 0 |
 
-**Precheck logs can be found** [**here**](https://github.com/MifralTech/Lacerta_CF/tree/main/precheck_results).
 
-2026-04-30 11:20:10 [INFO] Extracting compressed files in: /home/baungarten/Desktop/lacerta_march
-2026-04-30 11:20:11 [INFO] Project type: digital
-2026-04-30 11:20:12 [INFO] GDS hash (user_project_wrapper): 6b97c7a8678942fc2cc9d44b268f9c97943aedf2
-2026-04-30 11:20:13 [INFO] Tools: KLayout v0.29.2 | Magic v8.3.471
-2026-04-30 11:20:13 [INFO] PDK: SKY130A unknown
-2026-04-30 11:20:13 [INFO] Running 13 checks: [topcell_check, gpio_defines, xor, klayout_feol, klayout_beol, klayout_offgrid, klayout_met_min_ca_density, klayout_pin_label_purposes_overlapping_drawing, klayout_zeroarea, spike_check, illegal_cellname_check, lvs, oeb]
-2026-04-30 11:20:15 [INFO] Single top cell 'user_project_wrapper' found
-2026-04-30 11:20:15 [INFO] GPIO defines: parsing verilog/rtl/user_defines.v
-2026-04-30 11:20:15 [INFO] GPIO defines report: /home/baungarten/Desktop/lacerta_march/precheck_results/30_APR_2026___11_20_10/outputs/reports/gpio_defines.report
-2026-04-30 11:20:32 [INFO] Total XOR differences: 0
-2026-04-30 11:20:32 [INFO] Running: klayout -b -r /usr/local/lib/python3.9/site-packages/cf_precheck/drc_scripts/sky130A_mr.drc -rd input=/home/baungarten/Desktop/lacerta_march/gds/user_project_wrapper.gds -rd topcell=user_project_wrapper -rd report=/home/baungarten/Desktop/lacerta_march/precheck_results/30_APR_2026___11_20_10/outputs/reports/klayout_feol_check.xml -rd thr=32 -rd feol=true
-2026-04-30 11:25:24 [INFO] No DRC violations found
-2026-04-30 11:25:24 [INFO] Running: klayout -b -r /usr/local/lib/python3.9/site-packages/cf_precheck/drc_scripts/sky130A_mr.drc -rd input=/home/baungarten/Desktop/lacerta_march/gds/user_project_wrapper.gds -rd topcell=user_project_wrapper -rd report=/home/baungarten/Desktop/lacerta_march/precheck_results/30_APR_2026___11_20_10/outputs/reports/klayout_beol_check.xml -rd thr=32 -rd beol=true
-2026-04-30 11:37:27 [INFO] No DRC violations found
-2026-04-30 11:37:27 [INFO] Running: klayout -b -r /usr/local/lib/python3.9/site-packages/cf_precheck/drc_scripts/sky130A_mr.drc -rd input=/home/baungarten/Desktop/lacerta_march/gds/user_project_wrapper.gds -rd topcell=user_project_wrapper -rd report=/home/baungarten/Desktop/lacerta_march/precheck_results/30_APR_2026___11_20_10/outputs/reports/klayout_offgrid_check.xml -rd thr=32 -rd offgrid=true
-2026-04-30 11:40:26 [INFO] No DRC violations found
-2026-04-30 11:40:26 [INFO] Running: klayout -b -r /usr/local/lib/python3.9/site-packages/cf_precheck/drc_scripts/met_min_ca_density.lydrc -rd input=/home/baungarten/Desktop/lacerta_march/gds/user_project_wrapper.gds -rd topcell=user_project_wrapper -rd report=/home/baungarten/Desktop/lacerta_march/precheck_results/30_APR_2026___11_20_10/outputs/reports/klayout_met_min_ca_density_check.xml -rd thr=32
-2026-04-30 11:41:15 [INFO] No DRC violations found
-2026-04-30 11:41:15 [INFO] Running: klayout -b -r /usr/local/lib/python3.9/site-packages/cf_precheck/drc_scripts/pin_label_purposes_overlapping_drawing.rb.drc -rd input=/home/baungarten/Desktop/lacerta_march/gds/user_project_wrapper.gds -rd topcell=user_project_wrapper -rd report=/home/baungarten/Desktop/lacerta_march/precheck_results/30_APR_2026___11_20_10/outputs/reports/klayout_pin_label_purposes_overlapping_drawing_check.xml -rd thr=32 -rd top_cell_name=user_project_wrapper
-2026-04-30 11:41:48 [INFO] No DRC violations found
-2026-04-30 11:41:48 [INFO] Running: klayout -b -r /usr/local/lib/python3.9/site-packages/cf_precheck/drc_scripts/zeroarea.rb.drc -rd input=/home/baungarten/Desktop/lacerta_march/gds/user_project_wrapper.gds -rd topcell=user_project_wrapper -rd report=/home/baungarten/Desktop/lacerta_march/precheck_results/30_APR_2026___11_20_10/outputs/reports/klayout_zeroarea_check.xml -rd thr=32 -rd cleaned_output=/home/baungarten/Desktop/lacerta_march/precheck_results/30_APR_2026___11_20_10/outputs/user_project_wrapper_no_zero_areas.gds
-2026-04-30 11:41:56 [INFO] No DRC violations found
-2026-04-30 11:41:56 [INFO] Running: bash /usr/local/lib/python3.9/site-packages/cf_precheck/drc_scripts/gdsArea0 -V -m /home/baungarten/Desktop/lacerta_march/precheck_results/30_APR_2026___11_20_10/outputs/reports/spike_check.xml /home/baungarten/Desktop/lacerta_march/gds/user_project_wrapper.gds
-2026-04-30 11:42:02 [INFO] No spikes found
-2026-04-30 11:42:04 [INFO] Loading LVS environment from /home/baungarten/Desktop/lacerta_march/lvs/user_project_wrapper/lvs_config.json
-2026-04-30 11:42:04 [INFO] EXTRACT_FLATGLOB: 
-2026-04-30 11:42:04 [INFO] EXTRACT_ABSTRACT: *__fill_* *__fakediode_* *__tapvpwrvgnd_*
-2026-04-30 11:42:04 [WARNING] Missing LVS configuration variable EXTRACT_CREATE_SUBCUT
-2026-04-30 11:42:04 [INFO] LVS_FLATTEN: 
-2026-04-30 11:42:04 [INFO] LVS_NOFLATTEN: 
-2026-04-30 11:42:04 [INFO] LVS_IGNORE: 
-2026-04-30 11:42:04 [INFO] LVS_SPICE_FILES: /home/baungarten/Desktop/lacerta_march/dependencies/pdks/sky130A/libs.ref/sky130_fd_sc_hd/spice/sky130_ef_sc_hd__decap*.spice /home/baungarten/Desktop/lacerta_march/dependencies/pdks/sky130A/libs.ref/sky130_fd_sc_hd/spice/sky130_fd_sc_hd.spice
-2026-04-30 11:42:04 [INFO] LVS_VERILOG_FILES: /home/baungarten/Desktop/lacerta_march/verilog/gl/user_proj_example.v /home/baungarten/Desktop/lacerta_march/verilog/gl/user_project_wrapper.v
-2026-04-30 11:42:04 [INFO] LAYOUT_FILE: /home/baungarten/Desktop/lacerta_march/gds/user_project_wrapper.gds
-2026-04-30 11:42:04 [INFO] Running: run_be_checks --nooeb
-2026-04-30 11:42:04 [INFO] LVS output directory: /home/baungarten/Desktop/lacerta_march/precheck_results/30_APR_2026___11_20_10
-2026-04-30 11:51:57 [INFO] Loading LVS environment from /home/baungarten/Desktop/lacerta_march/lvs/user_project_wrapper/lvs_config.json
-2026-04-30 11:51:57 [INFO] EXTRACT_FLATGLOB: 
-2026-04-30 11:51:57 [INFO] EXTRACT_ABSTRACT: *__fill_* *__fakediode_* *__tapvpwrvgnd_*
-2026-04-30 11:51:57 [WARNING] Missing LVS configuration variable EXTRACT_CREATE_SUBCUT
-2026-04-30 11:51:57 [INFO] LVS_FLATTEN: 
-2026-04-30 11:51:57 [INFO] LVS_NOFLATTEN: 
-2026-04-30 11:51:57 [INFO] LVS_IGNORE: 
-2026-04-30 11:51:57 [INFO] LVS_SPICE_FILES: /home/baungarten/Desktop/lacerta_march/dependencies/pdks/sky130A/libs.ref/sky130_fd_sc_hd/spice/sky130_ef_sc_hd__decap*.spice /home/baungarten/Desktop/lacerta_march/dependencies/pdks/sky130A/libs.ref/sky130_fd_sc_hd/spice/sky130_fd_sc_hd.spice
-2026-04-30 11:51:57 [INFO] LVS_VERILOG_FILES: /home/baungarten/Desktop/lacerta_march/verilog/gl/user_proj_example.v /home/baungarten/Desktop/lacerta_march/verilog/gl/user_project_wrapper.v
-2026-04-30 11:51:57 [INFO] LAYOUT_FILE: /home/baungarten/Desktop/lacerta_march/gds/user_project_wrapper.gds
-2026-04-30 11:51:57 [INFO] Running: run_oeb_check --noextract
-2026-04-30 11:51:57 [INFO] OEB output directory: /home/baungarten/Desktop/lacerta_march/precheck_results/30_APR_2026___11_20_10
-2026-04-30 11:52:04 [WARNING] ERC check failed (stat=4), see /home/baungarten/Desktop/lacerta_march/precheck_results/30_APR_2026___11_20_10/logs/OEB_check.log
-
- ``` 
 
 ## Lacerta PCB
  
- **PCB files can be found** [**here**](https://github.com/MifralTech/Lacerta_CF/tree/main/PCB).
-
 The **Lacerta PCB** provides the physical platform used to power, configure, and evaluate the Lacerta hardware. At a general level, the board brings together the Caravel device, external memory, communication interfaces, clock generation, power regulation, and display connectivity required to operate the Lacerta graphics subsystem as a complete embedded system. In addition to hosting the main integrated circuits, the board exposes test points, headers, and peripheral connectors that simplify bring-up, debugging, and laboratory validation.
 
 From the schematic point of view, the board is organized into clearly separated functional domains. These include the **Caravel interface**, the **USB-to-serial path** used for configuration and communication, the **flash-memory interface**, the **clock-generator circuit**, the **power-supply section**, and the **display/output connectors**. This partitioning makes the design easier to validate and reflects the main operational needs of Lacerta: receiving commands, storing data, accessing the Caravel platform, and driving an external display.
 
-From a cost perspective, the Lacerta board was designed around widely available commercial parts, keeping the supporting electronics relatively affordable for prototyping and laboratory validation. Based on the current bill of materials in [lacerta_bom.csv](docs/assets/downloads/lacerta_bom.csv), the populated board components with listed prices sum to approximately **USD 28.46**. This estimate covers the off-the-shelf electronic components only and does **not** include PCB fabrication, board assembly, shipping, taxes, or the cost of the custom Lacerta/Caravel chip itself, which appears in the BOM as a non-priced item.
+From a cost perspective, the Lacerta board was designed around widely available commercial parts, keeping the supporting electronics relatively affordable for prototyping and laboratory validation. Based on the current bill of materials in <a href="lacerta_bom.csv">lacerta_bom.csv</a>, the populated board components with listed prices sum to approximately **USD 28.46**. This estimate covers the off-the-shelf electronic components only and does **not** include PCB fabrication, board assembly, shipping, taxes, or the cost of the custom Lacerta/Caravel chip itself, which appears in the BOM as a non-priced item.
 
 The cost distribution is dominated by a small number of active devices, especially the external SRAM, the programmable oscillator, and the FT232H USB interface. In contrast, most passive parts and headers contribute only a small fraction of the total. This is typical for a development-oriented board, where communication, memory, and clock-generation devices account for much of the material cost while still enabling a flexible and easy-to-evaluate hardware platform.
 
@@ -775,65 +1060,52 @@ Table 3 lists the main priced BOM entries together with direct supplier links. T
 | `J3,J5,J8,J9` | 4 | M50-3530242 | 0.40 | [Harwin 1x02 headers](https://www.digikey.com.mx/es/products/detail/harwin-inc/M50-3530242/7044013?s=N4IgTCBcDaILIFYAMBaAzAtSwBYIF0BfIA) |
 | `R5,R6,R11,R14` | 4 | RC0402FR-071KL | 0.40 | [Yageo 1 kOhm resistors](https://www.digikey.com/es/products/detail/yageo/RC0402FR-071KL/726513) |
 
-<p align="center">
-  <img src="docs/assets/img/scren_pcb_diag.png" width="500">
-</p>
-<p align="center">
-<b>Figure 6.</b> Schematic of the Lacerta development board, showing the main functional blocks including the Caravel connection, USB-to-serial interface, flash memory, clock generator, power regulation, and display/output connectors.
-</p>
+:::{figure} ../assets/img/scren_pcb_diag.png
+:alt: Schematic of the Lacerta development board
+:align: center
+:width: 700px
+
+**Figure 12.** Schematic of the Lacerta development board, showing the main functional blocks including the Caravel connection, USB-to-serial interface, flash memory, clock generator, power regulation, and display/output connectors.
+:::
 
 The PCB implementation translates this schematic into a compact development board that places the major components and user interfaces in accessible locations. The 3D view highlights the physical arrangement of the display and interface connectors, the Caravel-related devices, the USB/FTDI section, memory devices, headers, and support circuitry. This representation is useful for understanding the mechanical integration of the board and for checking connector placement, component accessibility, and assembly feasibility during the hardware-development process.
 
-<p align="center">
-  <img src="docs/assets/img/PCB_UART.jpeg" width="500">
-</p>
-<p align="center">
-<b>Figure 7.</b> 3D view of the Lacerta PCB, illustrating the assembled component placement, external connectors, and overall physical organization of the development board.
-</p>
+:::{figure} ../assets/img/PCB_UART.jpeg
+:alt: 3D view of the Lacerta PCB, illustrating the assembled component placement, external connectors
+:align: center
+:width: 700px
+
+**Figure 13.** 3D view of the Lacerta PCB, illustrating the assembled component placement, external connectors, and overall physical organization of the development board.
+:::
 
 The routed PCB layout shows how the electrical connections between these subsystems are realized on the board. It provides a detailed view of component placement, copper routing, and board dimensions, and it reflects the practical constraints of signal integrity, power distribution, and connector accessibility. Together, the schematic, 3D rendering, and final layout document the complete PCB-development flow for Lacerta, from circuit definition to manufacturable board implementation.
 
-<p align="center">
-  <img src="docs/assets/img/pcb_2d.png" width="500">
-</p>
-<p align="center">
-<b>Figure 8.</b> PCB layout of the Lacerta development board, showing the routed interconnections, component placement, and board geometry used to implement the final hardware platform.
-</p>
+:::{figure} ../assets/img/pcb_2d.png
+:alt: PCB layout of the Lacerta development board, showing the routed interconnections, component placement
+:align: center
+:width: 700px
 
-## Video 1. Quick Example of the Lacerta GUI
-
-The first video presents a short demonstration of the Lacerta GUI. It gives an overview of the design environment and shows how graphical HMI elements can be arranged and edited inside the software.
-
-YouTube link: [Quick example of the Lacerta GUI](https://www.youtube.com/watch?v=zW_LcxRJl4U)
-
-<iframe width="720" height="405" src="https://www.youtube.com/watch?v=zW_LcxRJl4U"
-title="Quick example of the Lacerta GUI" frameborder="0" allowfullscreen></iframe>
-
-## Video 2. FPGA Implementation of the HMI from Video 1
-
-The second video shows the implementation of the HMI created in the first demonstration. Its purpose is to connect the GUI design stage with the actual hardware execution stage, showing how the interface behaves once deployed on the target platform.
-
-YouTube link: [Implementation of the HMI shown in Video 1](https://www.youtube.com/watch?v=hOmbS-Z8mIQ)
-
-<iframe width="720" height="405" src="https://www.youtube.com/watch?v=hOmbS-Z8mIQ"
-title="Implementation of the HMI shown in Video 1" frameborder="0" allowfullscreen></iframe>
+**Figure 14.** PCB layout of the Lacerta development board, showing the routed interconnections, component placement, and board geometry used to implement the final hardware platform.
+:::
 
 
-## Open and Reproducible Architecture
+## Lacerta Interface Design Software
 
-Lacerta is designed as a **fully open-source reference architecture**. The project includes all required design artifacts to reproduce the system, including:
+The **Lacerta Interface Design Software** was developed as a desktop application that allows users to create, edit, export, and deploy graphical interfaces for the Lacerta hardware platform. The current implementation is written in **Python** using **PySide6**, and its main source file, `main.py`, integrates the complete application flow, including the user interface, the graphics-editing canvas, scene serialization, export generation, and serial communication with the target hardware. The software was designed not only as a drawing tool, but as a complete front-end for the Lacerta development flow, connecting interface creation directly with hardware execution.
 
-- [Documentation](https://mifraltech.github.io/Lacerta_CF/)
-- [RTL source code for the ASIC implementation](https://github.com/MifralTech/Lacerta_CF/tree/main/verilog/rtl)
-- [Librelane physical design flow integration](https://github.com/MifralTech/Lacerta_CF/tree/main/openlane)  
-<!--- [Verification testbenches]()  -->
-- [PCB design files](https://github.com/MifralTech/Lacerta_CF/tree/main/PCB)
-- [Firmware examples](https://github.com/chipfoundry/caravel_board)  
-- [Interface design tools](https://github.com/MifralTech/Lacerta_CF/tree/main/Interface_Design_Software)
+At the architectural level, the tool is organized around a **graphics-scene-based editor** built with `QGraphicsScene` and `QGraphicsView`. The `CanvasScene` class manages the editable design space, including canvas size, grid display, background image support, snapping, and item placement. Individual graphical elements are represented by custom `IndicatorItem` objects, which are movable and resizable and store the properties required to reconstruct the interface later. The scene also supports grouping and a layer model, making it possible to organize complex interfaces with explicit drawing order and visibility control. This editor structure gives the application the flexibility of a general design environment while still keeping the internal representation aligned with the needs of the Lacerta hardware.
+
+One of the most important parts of the software is its **indicator rendering engine**. The application includes a large collection of drawing routines that render different types of interface components, such as bars, graphs, seven-segment displays, gauges, warning indicators, switches, text labels, structural elements, and geometric shapes. These drawing functions operate through Qt painting primitives and are used both for real-time visual preview inside the editor and for off-screen rendering during export. This approach allowed the development of a consistent software-side representation of the same kinds of visual elements that the Lacerta hardware is expected to display, while also enabling rapid prototyping of new interface widgets.
+
+The development of the software also included a **properties and interaction layer** that turns the canvas into a practical design tool. The `PropertiesPanel`, `PalettePanel`, `LayerPanel`, and related dialogs provide mechanisms for selecting indicators, editing visual properties, assigning layers, changing canvas parameters, and managing scene behavior. A toolbar and tabbed main window (`MainWindow`) complete the editing environment by providing commands for scene creation, loading, saving, export, serial connection, and upload. This overall interface design makes the application function as a lightweight CAD-style editor specialized for embedded graphical HMIs.
+
+Another major stage in the development was the creation of the **serialization and export flow**. Scene content is converted into structured dictionaries through helper routines such as `_serialize_item`, then saved as JSON so that the interface can be reloaded and edited later. During export, the tool generates the assets needed by the Lacerta platform, including rendered images and binary or textual data representations derived from the current scene. The export path is therefore not limited to storing editor state; it also prepares the interface information in a form that can be consumed by the Lacerta hardware and firmware flow.
+
+The software was further extended with a **deployment path to hardware** through serial communication. The `SerialLoader` class implements memory-oriented UART transactions that allow the application to send masks, background images, and compiled interface-related data directly to the target platform. The upload process is executed asynchronously through `UploadWorker`, preventing the graphical interface from blocking during long transfers. In this way, the software does not stop at design-time preview: it acts as the operational bridge between the interface editor and the real Lacerta system running on hardware.
+
+Finally, the development of the Lacerta Interface Design Software incorporated supporting features that improve usability and reproducibility, such as persistent settings, toolchain-path checking, scene management, canvas background handling, and multi-depth export support. Together, these elements make the application a key part of the Lacerta ecosystem: it is the environment where interfaces are conceived, visually assembled, converted into deployable assets, and finally transferred to the embedded graphics hardware for execution.
 
 ### Lacerta Interface Design Software — GUI Notes
-
- **Lacerta Software can be found** [**here**](https://github.com/MifralTech/Lacerta_CF/tree/main/Interface_Design_Software).
 
 Important:
 - The prebuilt GUI in this repository is currently distributed as a Windows executable package and can only be run on **Windows**.
