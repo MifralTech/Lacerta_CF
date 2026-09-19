@@ -210,6 +210,20 @@ jobs:
           name: design-${{ matrix.pdk }}
           path: ${{ github.workspace }}
 
+      - name: Keep only one copy of each GDS
+        run: |
+          # The repository ships compressed GDS files (gds/*.gds.gz) to stay under the size limits,
+          # while hardening writes uncompressed ones. Precheck refuses to run when both exist
+          # ("Both compressed and uncompressed GDS exist. Keep only one."), so drop the compressed
+          # copy of every design that was just hardened.
+          shopt -s nullglob
+          for compressed in gds/*.gds.gz; do
+            if [ -e "${compressed%.gz}" ]; then
+              echo "Removing ${compressed} (uncompressed copy present)"
+              rm -f "${compressed}"
+            fi
+          done
+
       - name: Configure GPIO (non-interactive)
         run: |
           python3 <<EOF
