@@ -1,4 +1,3 @@
-// This module was AI generated with chatgpt (https://chatgpt.com/)
 // prompt 1: create a basic uart verilog BFM
 // prompt 2: I want it in pure verilog
 

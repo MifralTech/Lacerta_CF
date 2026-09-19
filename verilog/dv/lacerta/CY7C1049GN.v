@@ -1,4 +1,3 @@
-// This module was AI generated with chatgpt (https://chatgpt.com/) - prompt: can you create a SRAM verilog model for this sram part CY7C1049GN
 module CY7C1049GN (
     input  wire [15:0] A,     // Address (512K locations)
     inout  wire [7:0]  DQ,    // Data bus
